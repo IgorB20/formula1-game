@@ -34,25 +34,47 @@ int main(int argc, char *argv[])
 
     //SDL_Texture *field_texture = loadTexture("assets/tabuleiro.bmp", renderer);
 
-    SDL_Texture *field_texture = IMG_LoadTexture(renderer, "assets/bola.png");
+    SDL_Texture *field_texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
+    SDL_Texture *carro = IMG_LoadTexture(renderer, "assets/images/carro.png");
+
     cout << field_texture << endl;
     cout << SDL_GetError() << endl;
 
     bool running = true;
+
+    SDL_Rect destino;
+    destino.w = 1024 * 3.5;
+    destino.h = 1024 * 3.5;
+    destino.x = -3000;
+    destino.y = -1400;
+
+    SDL_Rect carro_destino;
+    carro_destino.w = 37 * 2;
+    carro_destino.h = 54 * 2;
+    carro_destino.x = 265;
+    carro_destino.y = 410;
+
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    int angle = 0;//rotação da tela
 
 
     SDL_Event event;
     while(running){
 
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, field_texture, NULL, NULL);
+        SDL_RenderCopyEx(renderer, field_texture, NULL, &destino, angle, NULL, flip);
+        SDL_RenderCopy(renderer, carro, NULL, &carro_destino);
         SDL_RenderPresent(renderer);
 
         while (SDL_PollEvent(&event)){
             switch (event.type){
               case SDL_QUIT:
                  running = false;
-                    break;
+                 break;
+              case SDL_KEYDOWN:
+                if (event.key.keysym.sym == SDLK_UP)
+                    destino.y += 10;
+                break;
             }
         }
     }
