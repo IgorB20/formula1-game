@@ -54,6 +54,8 @@ int main(int argc, char *argv[])
     carro_destino.x = 265;
     carro_destino.y = 410;
 
+
+
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     int angle = 0;//rotação da tela
 
@@ -74,6 +76,10 @@ int main(int argc, char *argv[])
               case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_UP)
                     destino.y += 10;
+                if (event.key.keysym.sym == SDLK_RIGHT)
+                    destino.x -= 2;
+                if (event.key.keysym.sym == SDLK_LEFT)
+                    destino.x += 2;
                 break;
             }
         }
