@@ -3,8 +3,8 @@
 #include <SDL2/SDL.h>
 
 struct Car {
-    int speed;
-    int max_speed;
+    float speed;
+    float max_speed;
     float acceleration;
     int position;
     int lap_time;

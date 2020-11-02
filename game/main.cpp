@@ -4,6 +4,9 @@
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "Car.h"
+#include "Race.h"
+#include "Speed.h"
 
 using namespace std;
 
@@ -14,6 +17,8 @@ SDL_Texture* loadTexture(const char* imgPath, SDL_Renderer* renderer){
     SDL_FreeSurface(surface);
     return texture;
 }
+
+
 
 int main(int argc, char *argv[])
 {
@@ -39,6 +44,13 @@ int main(int argc, char *argv[])
 
     cout << field_texture << endl;
     cout << SDL_GetError() << endl;
+
+    Car player;
+    player.speed = 0;
+    player.acceleration = 0.25;
+    player.max_speed = 30;
+
+    string direction;
 
     bool running = true;
 
@@ -75,14 +87,38 @@ int main(int argc, char *argv[])
                  break;
               case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_UP)
-                    destino.y += 10;
+                {
+                    direction = "UP";
+                    player.speed = speed(player.speed, player.max_speed, player.acceleration, direction);
+                    destino.y += player.speed;
+                }
                 if (event.key.keysym.sym == SDLK_RIGHT)
-                    destino.x -= 2;
+                {
+
+                    direction = "RIGHT";
+                    player.speed = speed(player.speed, player.max_speed, player.acceleration, direction);
+                    destino.x -= player.speed;
+                }
                 if (event.key.keysym.sym == SDLK_LEFT)
-                    destino.x += 2;
+                {
+                    direction = "LEFT";
+                    player.speed = speed(player.speed, player.max_speed, player.acceleration, direction);
+                    destino.x += player.speed;
+                }
+                if (event.key.keysym.sym == SDLK_DOWN)
+                {
+                    direction = "DOWN";
+                    player.speed = speed(player.speed, player.max_speed, player.acceleration, direction);
+                    destino.y -= player.speed;
+                }
                 break;
             }
         }
+        direction = "NULL";
+        player.speed = speed(player.speed, player.max_speed, player.acceleration, direction);
+        destino.y += player.speed;
+
+    cout << player.speed << endl;
     }
 
 

@@ -27,4 +27,5 @@ DEPENDPATH += $$PWD/../../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 
 HEADERS += \
     Car.h \
-    Race.h
+    Race.h \
+    Speed.h
