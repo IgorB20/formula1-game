@@ -1,9 +1,13 @@
 #include <QCoreApplication>
 #include <iostream>
+#include <math.h>
 
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <Car.h>
+#include <Speedway.h>
+
 
 using namespace std;
 
@@ -13,6 +17,10 @@ SDL_Texture* loadTexture(const char* imgPath, SDL_Renderer* renderer){
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     return texture;
+}
+
+float degreesToRadians(float angleDegrees) {
+   return (angleDegrees * 3.1415 / 180.0);
 }
 
 int main(int argc, char *argv[])
@@ -32,40 +40,24 @@ int main(int argc, char *argv[])
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
-    //SDL_Texture *field_texture = loadTexture("assets/tabuleiro.bmp", renderer);
-
-    SDL_Texture *field_texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
-    SDL_Texture *carro = IMG_LoadTexture(renderer, "assets/images/carro.png");
-
-    cout << field_texture << endl;
-    cout << SDL_GetError() << endl;
-
     bool running = true;
 
-    SDL_Rect destino;
-    destino.w = 1024 * 3.5;
-    destino.h = 1024 * 3.5;
-    destino.x = -3000;
-    destino.y = -1400;
+    Car carro;
+    carro.speed = 10;
+    carro.texture = IMG_LoadTexture(renderer, "assets/images/carro.png");
+    carro.destino = {.x= 265, .y= 410, .w= 37*2, .h= 54*2,};
+    carro.angle = 0;
 
-    SDL_Rect carro_destino;
-    carro_destino.w = 37 * 2;
-    carro_destino.h = 54 * 2;
-    carro_destino.x = 265;
-    carro_destino.y = 410;
-
-
-
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
-    int angle = 0;//rotação da tela
+    Speedway pista;
+    pista.texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
 
 
     SDL_Event event;
-    while(running){
 
+    while(running){
         SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, field_texture, NULL, &destino, angle, NULL, flip);
-        SDL_RenderCopy(renderer, carro, NULL, &carro_destino);
+        SDL_RenderCopy(renderer, pista.texture, NULL, &pista.destino);
+        SDL_RenderCopyEx(renderer, carro.texture, NULL, &carro.destino, carro.angle*-1, NULL, SDL_FLIP_NONE);
         SDL_RenderPresent(renderer);
 
         while (SDL_PollEvent(&event)){
@@ -74,20 +66,47 @@ int main(int argc, char *argv[])
                  running = false;
                  break;
               case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_UP)
-                    destino.y += 10;
-                if (event.key.keysym.sym == SDLK_RIGHT)
-                    destino.x -= 2;
-                if (event.key.keysym.sym == SDLK_LEFT)
-                    destino.x += 2;
+                if (event.key.keysym.sym == SDLK_UP)  carro.direction.up = true;
+                if (event.key.keysym.sym == SDLK_RIGHT) carro.direction.right = true;
+                if (event.key.keysym.sym == SDLK_LEFT) carro.direction.left = true;
+                if (event.key.keysym.sym == SDLK_DOWN) carro.direction.down = true;
                 break;
+
+            case SDL_KEYUP:
+              if (event.key.keysym.sym == SDLK_UP) carro.direction.up = false;
+              if (event.key.keysym.sym == SDLK_LEFT) carro.direction.left = false;
+              if (event.key.keysym.sym == SDLK_RIGHT) carro.direction.right = false;
+              if (event.key.keysym.sym == SDLK_DOWN) carro.direction.down = false;
             }
         }
+
+
+        if(carro.direction.up){
+
+            pista.destino.y += carro.speed * cos(degreesToRadians(carro.angle));
+            pista.destino.x += carro.speed * sin(degreesToRadians(carro.angle));
+
+        };
+
+        if(carro.direction.down){
+            pista.destino.y -= carro.speed * cos(degreesToRadians(carro.angle));
+            pista.destino.x -= carro.speed * sin(degreesToRadians(carro.angle));
+        }
+        if(carro.direction.left){
+            carro.angle += 2;
+        };
+        if(carro.direction.right){
+            carro.angle -= 2;
+        }
+
+        SDL_Delay(1000/60);//60 FPS
+
     }
 
 
 
-    SDL_DestroyTexture(field_texture);
+    SDL_DestroyTexture(pista.texture);
+    SDL_DestroyTexture(carro.texture);
     SDL_DestroyWindow(window);
 
     SDL_Quit();
