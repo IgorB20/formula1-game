@@ -4,13 +4,13 @@
 #include <Direction.h>
 
 struct Car {
-    int speed;
-    int max_speed;
+    float speed;
+    float max_speed;
     float acceleration;
     int race_position;
     int lap_time;
     int total_time;
-    int current_lap;
+    int current_lap = 1;
     float angle;
     Direction direction;
     SDL_Texture* texture = nullptr;

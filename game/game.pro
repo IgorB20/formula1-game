@@ -8,7 +8,10 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        carLib.cpp \
+        gameLib.cpp \
+        main.cpp \
+        utils.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -27,7 +30,10 @@ DEPENDPATH += $$PWD/../../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 
 HEADERS += \
     Car.h \
+    Race.h \
     Direction.h \
     Race.h \
     Speedway.h \
-    carLib.h
+    carLib.h \
+    gameLib.h \
+    utils.h
