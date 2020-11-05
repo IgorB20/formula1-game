@@ -20,16 +20,21 @@ void init(){
 
     bool running = true;
 
+    Speedway pista;
+    pista.texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
+
     Car carro;
-    carro.speed = 0;
+    carro.speed = 5;
     carro.acceleration = 0.0125;
     carro.max_speed = 7;
     carro.texture = IMG_LoadTexture(renderer, "assets/images/carro.png");
     carro.destino = {.x= 265, .y= 410, .w= 37*2, .h= 54*2,};
     carro.angle = 0;
+    carro.coordinates.x = (carro.destino.x) + (pista.destino.x*-1);
+    carro.coordinates.y = (carro.destino.y) + (pista.destino.y*-1);
 
-    Speedway pista;
-    pista.texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
+
+
 
     while(running){
         SDL_RenderClear(renderer);
@@ -40,7 +45,7 @@ void init(){
         handleEvents(running, &carro);
         handleCarDirections(&carro, &pista);
 
-        cout << carro.speed << endl;
+        //cout << carro.speed << endl;
 
         SDL_Delay(1000/60);//60 FPS
     }
