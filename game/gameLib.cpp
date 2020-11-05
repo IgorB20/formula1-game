@@ -52,8 +52,7 @@ void init(){
     SDL_Quit();
 
 }
-
-void handleEvents(bool &running, Car* carro){
+void handleEvents(bool &running, Car* carro ){
     SDL_Event event;
     while (SDL_PollEvent(&event)){
         switch (event.type){
@@ -61,10 +60,17 @@ void handleEvents(bool &running, Car* carro){
              running = false;
              break;
           case SDL_KEYDOWN:
+            switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
+                running=false;
+                break;
+             }
+
             if (event.key.keysym.sym == SDLK_UP)  carro->direction.up = true;
             if (event.key.keysym.sym == SDLK_RIGHT) carro->direction.right = true;
             if (event.key.keysym.sym == SDLK_LEFT) carro->direction.left = true;
             if (event.key.keysym.sym == SDLK_DOWN) carro->direction.down = true;
+
             break;
 
         case SDL_KEYUP:
@@ -73,6 +79,9 @@ void handleEvents(bool &running, Car* carro){
           if (event.key.keysym.sym == SDLK_RIGHT) carro->direction.right = false;
           if (event.key.keysym.sym == SDLK_DOWN) carro->direction.down = false;
           break;
+
+
+
         }
     }
 }
