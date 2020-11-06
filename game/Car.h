@@ -12,6 +12,7 @@ struct Car {
     int total_time;
     int current_lap = 1;
     float angle;
+    SDL_Point coordinates;
     Direction direction;
     SDL_Texture* texture = nullptr;
     SDL_Rect destino;

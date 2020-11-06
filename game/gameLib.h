@@ -8,6 +8,8 @@
 #include <carLib.h>
 #include <utils.h>
 #include <math.h>
+#include <speedometerlib.h>
+
 
 void init();
 

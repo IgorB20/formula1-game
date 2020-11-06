@@ -11,6 +11,7 @@ SOURCES += \
         carLib.cpp \
         gameLib.cpp \
         main.cpp \
+        speedometer.cpp \
         utils.cpp
 
 # Default rules for deployment.
@@ -33,7 +34,9 @@ HEADERS += \
     Race.h \
     Direction.h \
     Race.h \
+    Speedometer.h \
     Speedway.h \
     carLib.h \
     gameLib.h \
+    speedometerlib.h \
     utils.h
