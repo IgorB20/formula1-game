@@ -55,34 +55,74 @@ void init(){
 void handleEvents(bool &running, Car* carro ){
     SDL_Event event;
     while (SDL_PollEvent(&event)){
-        switch (event.type){
-          case SDL_QUIT:
-             running = false;
-             break;
-          case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-                case SDLK_ESCAPE:
-                running=false;
+        bool tipoEvento = event.type == SDL_KEYDOWN;
+        switch (event.key.keysym.sym) {
+              case SDLK_UP:
+                carro->direction.up = tipoEvento;
+                  break;
+              case SDLK_RIGHT:
+                carro->direction.right = tipoEvento;
+                  break;
+              case SDLK_LEFT:
+                carro->direction.left = tipoEvento;
+                  break;
+              case SDLK_DOWN:
+                carro->direction.down = tipoEvento;
+                  break;
+              case SDLK_ESCAPE:
+                running = false;
                 break;
-             }
-
-            if (event.key.keysym.sym == SDLK_UP)  carro->direction.up = true;
-            if (event.key.keysym.sym == SDLK_RIGHT) carro->direction.right = true;
-            if (event.key.keysym.sym == SDLK_LEFT) carro->direction.left = true;
-            if (event.key.keysym.sym == SDLK_DOWN) carro->direction.down = true;
-
-            break;
-
-        case SDL_KEYUP:
-          if (event.key.keysym.sym == SDLK_UP) carro->direction.up = false;
-          if (event.key.keysym.sym == SDLK_LEFT) carro->direction.left = false;
-          if (event.key.keysym.sym == SDLK_RIGHT) carro->direction.right = false;
-          if (event.key.keysym.sym == SDLK_DOWN) carro->direction.down = false;
-          break;
-
-
 
         }
+
+
     }
 }
+//        switch (event.type){
+//          case SDL_QUIT:
+//            running = false;
+//            break;
+//       case SDL_KEYDOWN:
+//         switch (event.key.keysym.sym) {
+//             case SDLK_ESCAPE:
+//             running=false;
+//               break;
+//             case SDLK_UP:
+//             carro->direction.up = true;
+//               break;
+//             case SDLK_RIGHT:
+//             carro->direction.right = true;
+//               break;
+//             case SDLK_LEFT:
+//             carro->direction.left = true;
+//               break;
+//             case SDLK_DOWN:
+//             carro->direction.down = true;
+//               break;
+
+//          }
+//         break;
+
+//        case SDL_KEYUP:
+//          switch (event.key.keysym.sym) {
+//            case SDLK_UP:
+//          carro->direction.up = false;
+//            break;
+//            case SDLK_RIGHT:
+//          carro->direction.right = false;
+//            break;
+//            case SDLK_LEFT:
+//          carro->direction.left = false;
+//            break;
+//            case SDLK_DOWN:
+//          carro->direction.down = false;
+//            break;
+
+//          }
+
+//         break;
+
+
+
+//        }
 
