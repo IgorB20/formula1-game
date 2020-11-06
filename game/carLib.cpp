@@ -1,4 +1,5 @@
 #include <carLib.h>
+#include <speedometerlib.h>
 #include <math.h>
 #include <string>
 #include <iostream>
@@ -62,7 +63,7 @@ void turnRight(Car* carro){
 };
 
 
-void desacelerate(Car* carro){
+void desacelerate(Car* carro, Speedometer* speedometer){
     if (carro->speed < 0){
         carro->speed = 0;
         return;
@@ -70,26 +71,28 @@ void desacelerate(Car* carro){
 
         if (carro->speed > 0)
         {
-            carro->speed -= 0.00125;
+            carro->speed -= 0.0125;
+            ArrowAngleDes(speedometer);
         }
 
 }
 
 
 
-void accelerate(Car* carro){
+void accelerate(Car* carro, Speedometer* speedometer){
     if(carro->speed >= carro->max_speed){
         carro->speed = carro->max_speed;
         return;
     }
 
    carro->speed += carro->acceleration*5;
+   ArrowAngleAcc(speedometer);
 };
 
 
-void handleCarDirections(Car* carro, Speedway* pista){
+void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer){
     if(carro->direction.up){
-        //accelerate(carro);
+        accelerate(carro, speedometer);
         moveUp(pista, carro);
     };
 
@@ -103,7 +106,7 @@ void handleCarDirections(Car* carro, Speedway* pista){
     }
 
 
-    //desacelerate(carro);
-    //moveUp(pista, carro);
+        desacelerate(carro, speedometer);
+        moveUp(pista, carro);
 
 }

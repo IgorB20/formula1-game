@@ -2,6 +2,7 @@
 #define CARLIB_H
 #include <Speedway.h>
 #include <Car.h>
+#include <Speedometer.h>
 #include <utils.h>
 #include <string>
 
@@ -15,11 +16,11 @@ void turnLeft(Car* carro);
 
 void turnRight(Car* carro);
 
-void accelerate(Car* carro);
+void accelerate(Car* carro, Speedometer* speedometer);
 
-void desacelerate(Car* carro);
+void desacelerate(Car* carro, Speedometer* speedometer);
 
 void updateCarCoordinates(Car* carro, string direction);
 
-void handleCarDirections(Car* carro, Speedway* pista);
+void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer );
 #endif // CARLIB_H

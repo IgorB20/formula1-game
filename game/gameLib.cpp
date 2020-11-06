@@ -24,7 +24,7 @@ void init(){
     pista.texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
 
     Car carro;
-    carro.speed = 5;
+    carro.speed = 0;
     carro.acceleration = 0.0125;
     carro.max_speed = 7;
     carro.texture = IMG_LoadTexture(renderer, "assets/images/carro.png");
@@ -33,17 +33,28 @@ void init(){
     carro.coordinates.x = (carro.destino.x) + (pista.destino.x*-1);
     carro.coordinates.y = (carro.destino.y) + (pista.destino.y*-1);
 
+    Speedometer speedometer;
+    speedometer.angle = 0;
+    speedometer.center->x = 113;
+    speedometer.center->y = 10;
+    speedometer.textureArrow = IMG_LoadTexture(renderer, "assets/images/arrow.png");
+    speedometer.destinoArrow = {.x= 20, .y= 540, .w= 113, .h= 20,};
+    speedometer.textureSpeedometer = IMG_LoadTexture(renderer, "assets/images/speedometer.png");
+    speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
+
 
 
 
     while(running){
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, pista.texture, NULL, &pista.destino);
+        SDL_RenderCopy(renderer, speedometer.textureSpeedometer, NULL, &speedometer.destinoSpeedometer);
+        SDL_RenderCopyEx(renderer, speedometer.textureArrow, NULL, &speedometer.destinoArrow, speedometer.angle, speedometer.center, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, carro.texture, NULL, &carro.destino, carro.angle*-1, NULL, SDL_FLIP_NONE);
         SDL_RenderPresent(renderer);
 
         handleEvents(running, &carro);
-        handleCarDirections(&carro, &pista);
+        handleCarDirections(&carro, &pista, &speedometer);
 
         //cout << carro.speed << endl;
 
@@ -52,6 +63,8 @@ void init(){
 
     SDL_DestroyTexture(pista.texture);
     SDL_DestroyTexture(carro.texture);
+    SDL_DestroyTexture(speedometer.textureArrow);
+    SDL_DestroyTexture(speedometer.textureSpeedometer);
     SDL_DestroyWindow(window);
 
     SDL_Quit();
