@@ -13,7 +13,7 @@ void moveUp(Speedway* pista, Car *carro){
     if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) >= (3584 - carro->destino.h)) return;
 
     //up -> DANDO ERRADO
-    //if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) <= (0 - carro->destino.h)) return;
+    if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) <= (0 - carro->destino.h)) return;
 
     //right
     if(carro->coordinates.x - carro->speed * sin(degreesToRadians(carro->angle)) >= (3584 - carro->destino.w)) return;
@@ -25,9 +25,10 @@ void moveUp(Speedway* pista, Car *carro){
     pista->destino.y += carro->speed * cos(degreesToRadians(carro->angle));
     pista->destino.x += carro->speed * sin(degreesToRadians(carro->angle));
 
+
     updateCarCoordinates(carro, "UP");
 
-    cout << carro->coordinates.x << ", " << carro->coordinates.y << endl;
+    //cout << carro->coordinates.x << ", " << carro->coordinates.y << endl;
 
 }
 
@@ -52,12 +53,12 @@ void updateCarCoordinates(Car* carro, string direction){
 };
 
 void turnLeft(Car* carro){
-    if(carro->speed == 0) return;
+    if(carro->speed <= 1) return;
     carro->angle += 2;
 };
 
 void turnRight(Car* carro){
-     if(carro->speed == 0) return;
+     if(carro->speed <= 1) return;
      carro->angle -= 2;
 };
 
@@ -73,6 +74,7 @@ void desacelerate(Car* carro){
             carro->speed -= 0.00125;
         }
 
+     cout << carro->speed << endl;
 }
 
 
@@ -84,6 +86,7 @@ void accelerate(Car* carro){
     }
 
    carro->speed += carro->acceleration*5;
+   cout << carro->speed << endl;
 };
 
 
@@ -99,6 +102,7 @@ void handleCarDirections(Car* carro, Speedway* pista){
 
 
    if(carro->direction.down){
+        //desacelerate(carro);
         moveDown(pista, carro);
     }
 
