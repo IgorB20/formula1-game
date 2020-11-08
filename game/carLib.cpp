@@ -1,4 +1,5 @@
 #include <carLib.h>
+#include <speedometerlib.h>
 #include <math.h>
 #include <string>
 #include <iostream>
@@ -7,19 +8,25 @@ using namespace std;
 
 void moveUp(Speedway* pista, Car *carro){
 
-    //A VERIFICAÇÃO DE COLISÃO COM AS PAREDES TEM Q SER FEITA QUANDO OC ARRO ESTIVER DANDO RÉ TAMBÉM!!
+    //int testex = (carro->coordinates.x) - 3000;
+    //int testey = (carro->coordinates.y) - 1400;
 
-    //down
-    if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) >= (3584 - carro->destino.h)) return;
+    //SDL_LockSurface(pista->surface);
+    //cout << SDL_GetError() << endl;
+    //Uint32 pixelData = getpixel(pista->surface, testex, testey);
 
-    //up -> DANDO ERRADO
-    if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) <= (0 - carro->destino.h)) return;
+    //int red = (pixelData & 255);
+    //int green = ((pixelData >> 8) & 255);
+    //int blue = ((pixelData >> 16) & 255);
 
-    //right
-    if(carro->coordinates.x - carro->speed * sin(degreesToRadians(carro->angle)) >= (3584 - carro->destino.w)) return;
+    //cout << red << ", " << green << ", " << ", " <<  blue << endl;
 
-    //left ->DANDO ERRADO
-    //if(carro->coordinates.x - carro->speed * sin(degreesToRadians(carro->angle)) <= (0 + carro->destino.w)) return;
+    //if(carro->direction.up){
+
+    //}
+
+
+     //SDL_UnlockSurface(pista->surface);
 
     //o parametro carro nao precisa ser um ponteiro nessa função!!
     pista->destino.y += carro->speed * cos(degreesToRadians(carro->angle));
@@ -28,7 +35,23 @@ void moveUp(Speedway* pista, Car *carro){
 
     updateCarCoordinates(carro, "UP");
 
-    //cout << carro->coordinates.x << ", " << carro->coordinates.y << endl;
+
+    //cout << testex  << ", " << testey << endl;
+    cout << carro->speed << endl;
+
+    //A VERIFICAÇÃO DE COLISÃO COM AS PAREDES TEM Q SER FEITA QUANDO OC ARRO ESTIVER DANDO RÉ TAMBÉM!!
+
+    //down
+    //if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) >= (3584 - carro->destino.h)) return;
+
+    //up -> DANDO ERRADO
+    //if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) <= (0 - carro->destino.h)) return;
+
+    //right
+    //if(carro->coordinates.x - carro->speed * sin(degreesToRadians(carro->angle)) >= (3584 - carro->destino.w)) return;
+
+    //left ->DANDO ERRADO
+    //if(carro->coordinates.x - carro->speed * sin(degreesToRadians(carro->angle)) <= (0 + carro->destino.w)) return;
 
 }
 
@@ -36,7 +59,7 @@ void moveDown(Speedway* pista, Car *carro){
     pista->destino.y -= carro->speed * cos(degreesToRadians(carro->angle));
     pista->destino.x -= carro->speed * sin(degreesToRadians(carro->angle));
 
-  updateCarCoordinates(carro, "DOWN");
+    updateCarCoordinates(carro, "DOWN");
 }
 
 void updateCarCoordinates(Car* carro, string direction){
@@ -53,17 +76,17 @@ void updateCarCoordinates(Car* carro, string direction){
 };
 
 void turnLeft(Car* carro){
-    if(carro->speed <= 1) return;
+    //if(carro->speed <= 1) return;
     carro->angle += 2;
 };
 
 void turnRight(Car* carro){
-     if(carro->speed <= 1) return;
+     //if(carro->speed <= 1) return;
      carro->angle -= 2;
 };
 
 
-void desacelerate(Car* carro){
+void desacelerate(Car* carro, Speedometer* speedometer){
     if (carro->speed < 0){
         carro->speed = 0;
         return;
@@ -71,30 +94,41 @@ void desacelerate(Car* carro){
 
         if (carro->speed > 0)
         {
-            carro->speed -= 0.00125;
+            carro->speed -= 0.04;
+            ArrowAngleDes(speedometer);
         }
 
-     cout << carro->speed << endl;
+     //cout << carro->speed << endl;
 }
 
 
 
-void accelerate(Car* carro){
+void accelerate(Car* carro, Speedometer* speedometer){
     if(carro->speed >= carro->max_speed){
         carro->speed = carro->max_speed;
         return;
     }
 
-   carro->speed += carro->acceleration*5;
-   cout << carro->speed << endl;
+   carro->speed += carro->acceleration;
+   ArrowAngleAcc(speedometer);
+
 };
 
+void brake(Car* carro){
+    if (carro->speed < 0){
+        carro->speed = 0;
+        return;
+    }
+    carro->speed -= 0.09;
+}
 
-void handleCarDirections(Car* carro, Speedway* pista){
+
+void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer){
     if(carro->direction.up){
-        //accelerate(carro);
-        moveUp(pista, carro);
-    };
+        accelerate(carro, speedometer);
+    }else{
+         desacelerate(carro, speedometer);
+    }
 
     if(carro->direction.left) turnLeft(carro);
 
@@ -102,12 +136,17 @@ void handleCarDirections(Car* carro, Speedway* pista){
 
 
    if(carro->direction.down){
-        //desacelerate(carro);
-        moveDown(pista, carro);
+       //FAZER FUNÇÃO DE FREIO!!
+       //desacelerate(carro);
+       if(carro->speed == 0){
+            moveDown(pista, carro);
+       }else{
+           //freiar
+           brake(carro);
+           ArrowAngleBrake(speedometer);
+       }
     }
 
-
-    //desacelerate(carro);
-    //moveUp(pista, carro);
+    moveUp(pista, carro);
 
 }

@@ -5,9 +5,12 @@
 #include <SDL2/SDL_image.h>
 #include <Car.h>
 #include <Speedway.h>
+#include <Speedometer.h>
 #include <carLib.h>
 #include <utils.h>
 #include <math.h>
+#include <speedometerlib.h>
+
 
 void init();
 

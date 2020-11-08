@@ -4,7 +4,9 @@
 #include <vector>
 
 struct Speedway{
+
     SDL_Texture* texture = nullptr;
+    SDL_Surface* surface = nullptr;
     SDL_Rect destino = {.x= -3000, .y= -1400, .w=static_cast<int>(1024*3.5), .h= static_cast<int>(1024*3.5),};
 
 };

@@ -5,41 +5,6 @@
 using namespace std;
 
 
-Uint32 getpixel(SDL_Surface *surface, int x, int y)
-{
-    int bpp = surface->format->BytesPerPixel;
-
-    /* Here p is the address to the pixel we want to retrieve */
-    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
-
-    switch(bpp) {
-    case 1:
-        return *p;
-        break;
-
-    case 2:
-        return *(Uint16 *)p;
-        break;
-
-    case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            return p[0] << 16 | p[1] << 8 | p[2];
-        else
-            return p[0] | p[1] << 8 | p[2] << 16;
-        break;
-
-    case 4:
-        return *(Uint32 *)p;
-        break;
-
-    default:
-        return 0;       /* shouldn't happen, but avoids warnings */
-    }
-}
-
-
-
-
 
 void init(){
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -53,29 +18,21 @@ void init(){
 
     SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     bool running = true;
 
     Speedway pista;
-    SDL_Surface* surface = IMG_Load("assets/images/speedway.png");
-    pista.texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-
-    SDL_LockSurface(surface);
-     //cout << SDL_GetError() << endl;
-    Uint32 pixelData = getpixel(surface, 131, 132);
-    cout << ((pixelData >> 16) & 255) << endl;
-    cout << ((pixelData >> 8) & 255) << endl;
-    cout << (pixelData & 255) << endl;
-    //cout << SDL_GetError() << endl;
-    //cout << pixelData << endl;
+    pista.surface = IMG_Load("assets/images/speedway.png");
+    pista.texture = SDL_CreateTextureFromSurface(renderer, pista.surface);
+    //pista.texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
 
 
     Car carro;
-    carro.speed = 10;
-    carro.acceleration = 0.0125;
-    carro.max_speed = 7;
+
+    carro.speed = 0;
+    carro.acceleration = 0.1;
+    carro.max_speed = 12;
     carro.texture = IMG_LoadTexture(renderer, "assets/images/carro.png");
     carro.destino = {.x= 265, .y= 410, .w= 37*2, .h= 54*2,};
     carro.angle = 0;
@@ -83,59 +40,118 @@ void init(){
     carro.coordinates.y = (carro.destino.y) + (pista.destino.y*-1);
 
 
+    Speedometer speedometer;
+    speedometer.angle = 0;
+    speedometer.rotation_axis.x = 113;
+    speedometer.rotation_axis.y = 10;
+    speedometer.textureArrow = IMG_LoadTexture(renderer, "assets/images/arrow.png");
+    speedometer.destinoArrow = {.x= 20, .y= 540, .w= 113, .h= 20,};
+    speedometer.textureSpeedometer = IMG_LoadTexture(renderer, "assets/images/speedometer.png");
+    speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
+
+
     while(running){
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, pista.texture, NULL, &pista.destino);
+        SDL_RenderCopy(renderer, speedometer.textureSpeedometer, NULL, &speedometer.destinoSpeedometer);
+        SDL_RenderCopyEx(renderer, speedometer.textureArrow, NULL, &speedometer.destinoArrow, speedometer.angle, &speedometer.rotation_axis, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, carro.texture, NULL, &carro.destino, carro.angle*-1, NULL, SDL_FLIP_NONE);
 
-
-        //menu lateral para mostra informações (velocidade atual, volta atual, tempo)
-        //SDL_SetRenderDrawColor(renderer, 82, 79, 79, 0);
-        //SDL_Rect lateralViewer = {.x = 450, .y=10, .w=175, .h=540};
-        //SDL_RenderFillRect(renderer, &pista.hitboxes[0]);
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderPresent(renderer);
 
         handleEvents(running, &carro);
-        handleCarDirections(&carro, &pista);
-
-        //cout << carro.speed << endl;
+        handleCarDirections(&carro, &pista, &speedometer);
 
         SDL_Delay(1000/60);//60 FPS
     }
 
     SDL_DestroyTexture(pista.texture);
     SDL_DestroyTexture(carro.texture);
-    SDL_FreeSurface(surface);
+
+    SDL_FreeSurface(pista.surface);
+
+    SDL_DestroyTexture(speedometer.textureArrow);
+    SDL_DestroyTexture(speedometer.textureSpeedometer);
+
     SDL_DestroyWindow(window);
 
     SDL_Quit();
 
 }
-
-void handleEvents(bool &running, Car* carro){
+void handleEvents(bool &running, Car* carro ){
     SDL_Event event;
     while (SDL_PollEvent(&event)){
-        switch (event.type){
-          case SDL_QUIT:
-             running = false;
-             break;
-          case SDL_KEYDOWN:
-            if (event.key.keysym.sym == SDLK_UP)  carro->direction.up = true;
-            if (event.key.keysym.sym == SDLK_RIGHT) carro->direction.right = true;
-            if (event.key.keysym.sym == SDLK_LEFT) carro->direction.left = true;
-            if (event.key.keysym.sym == SDLK_DOWN) carro->direction.down = true;
-            break;
+        if(event.type == SDL_QUIT) running = false;
 
-        case SDL_KEYUP:
-          if (event.key.keysym.sym == SDLK_UP) carro->direction.up = false;
-          if (event.key.keysym.sym == SDLK_LEFT) carro->direction.left = false;
-          if (event.key.keysym.sym == SDLK_RIGHT) carro->direction.right = false;
-          if (event.key.keysym.sym == SDLK_DOWN) carro->direction.down = false;
-          break;
+        bool tipoEvento = event.type == SDL_KEYDOWN;
+        switch (event.key.keysym.sym) {
+              case SDLK_UP:
+                carro->direction.up = tipoEvento;
+                  break;
+              case SDLK_RIGHT:
+                carro->direction.right = tipoEvento;
+                  break;
+              case SDLK_LEFT:
+                carro->direction.left = tipoEvento;
+                  break;
+              case SDLK_DOWN:
+                carro->direction.down = tipoEvento;
+                  break;
+              case SDLK_ESCAPE:
+                running = false;
+                break;
+
         }
+
+
     }
 }
+//        switch (event.type){
+//          case SDL_QUIT:
+//            running = false;
+//            break;
+//       case SDL_KEYDOWN:
+//         switch (event.key.keysym.sym) {
+//             case SDLK_ESCAPE:
+//             running=false;
+//               break;
+//             case SDLK_UP:
+//             carro->direction.up = true;
+//               break;
+//             case SDLK_RIGHT:
+//             carro->direction.right = true;
+//               break;
+//             case SDLK_LEFT:
+//             carro->direction.left = true;
+//               break;
+//             case SDLK_DOWN:
+//             carro->direction.down = true;
+//               break;
+
+//          }
+//         break;
+
+//        case SDL_KEYUP:
+//          switch (event.key.keysym.sym) {
+//            case SDLK_UP:
+//          carro->direction.up = false;
+//            break;
+//            case SDLK_RIGHT:
+//          carro->direction.right = false;
+//            break;
+//            case SDLK_LEFT:
+//          carro->direction.left = false;
+//            break;
+//            case SDLK_DOWN:
+//          carro->direction.down = false;
+//            break;
+
+//          }
+
+//         break;
+
+
+
+//        }
 
