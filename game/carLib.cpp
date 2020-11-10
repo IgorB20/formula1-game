@@ -28,18 +28,38 @@ bool isNewLap(Speedway* pista, Car *carro){
 }
 
 void moveUp(Speedway* pista, Car *carro){
+    if(carro->speed == 0) return;
 
+  /*
+    SDL_LockSurface(pista->surface);
+    // cout << SDL_GetError() << endl;
+    int testex = carro->coordinates.x/3.5;
+    int testey = carro->coordinates.y/3.5;
+    //cout << testex << ", " << testey << endl;
+
+
+    Uint32 pixelData = getpixel(pista->surface, testex, testey);
+    cout << pixelData << endl;
+    int red = (pixelData & 255);
+    int green = ((pixelData >> 8) & 255);
+    int blue = ((pixelData >> 16) & 255);
+
+    cout << red << ", " << green << ", " << ", " <<  blue << endl;
+    SDL_UnlockSurface(pista->surface);
+
+    if(red == 115 && green == 123 && blue == 132 || red == 115 && green == 115 && blue == 123){
+
+    }*/
 
 
     //o parametro carro nao precisa ser um ponteiro nessa função!!
     pista->destino.y += carro->speed * cos(degreesToRadians(carro->angle));
     pista->destino.x += carro->speed * sin(degreesToRadians(carro->angle));
 
-
     updateCarCoordinates(carro, pista);
     removeLapIncrementBlock(pista, carro);
 
-    cout << carro->coordinates.x << ", " << carro->coordinates.y << endl;
+    //cout << carro->coordinates.x << ", " << carro->coordinates.y << endl;
 
     //cout << testex  << ", " << testey << endl;
     //cout << carro->speed << endl;
@@ -47,9 +67,6 @@ void moveUp(Speedway* pista, Car *carro){
     //int testex = (carro->coordinates.x) - 3000;
     //int testey = (carro->coordinates.y) - 1400;
 
-    //SDL_LockSurface(pista->surface);
-    //cout << SDL_GetError() << endl;
-    //Uint32 pixelData = getpixel(pista->surface, testex, testey);
 
     //int red = (pixelData & 255);
     //int green = ((pixelData >> 8) & 255);
@@ -93,7 +110,7 @@ void updateCarCoordinates(Car* carro, Speedway* pista){
 };
 
 void turnLeft(Car* carro){
-    if(carro->speed == 0) return;
+    //if(carro->speed == 0) return;
     carro->angle += 2;
 };
 
@@ -121,6 +138,7 @@ void desacelerate(Car* carro, Speedometer* speedometer){
 
 
 void accelerate(Car* carro, Speedometer* speedometer){
+
     if(carro->speed >= carro->max_speed){
         carro->speed = carro->max_speed;
         return;
@@ -143,6 +161,7 @@ void brake(Car* carro){
 void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer){
     if(carro->direction.up){
         accelerate(carro, speedometer);
+
     }else{
          desacelerate(carro, speedometer);
     }

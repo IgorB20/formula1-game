@@ -68,6 +68,9 @@ void init(){
     SDL_Rect lapNumberDestino = {.x= 555, .y= 9, .w= 30, .h= 40};
      SDL_Rect lapNumberOrigem = {.x= 17, .y= 3, .w= 13, .h= 18};
 
+
+
+
     while(running){
 
         SDL_RenderClear(renderer);
