@@ -5,6 +5,24 @@
 using namespace std;
 
 
+void menu( SDL_Renderer * renderer ){
+    bool menuAtivo = true;
+    SDL_RenderCopy(renderer, IMG_LoadTexture(renderer,"assets/images/menucom.bmp"), NULL, NULL);
+
+    SDL_RenderPresent(renderer);
+    SDL_Delay(1000 / 60); // 60 fps
+    while (menuAtivo) {
+        SDL_Event evento;
+
+        SDL_PollEvent(&evento);
+
+        if (evento.type == SDL_KEYDOWN) {
+            if (evento.key.keysym.sym == SDLK_KP_ENTER || evento.key.keysym.sym == SDLK_RETURN) {
+                menuAtivo = false;
+            }
+        }
+    }
+}
 
 void init(){
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -50,6 +68,7 @@ void init(){
     speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
 
 
+
     SDL_Texture* lapText = IMG_LoadTexture(renderer, "assets/images/letters.png");
     //L
     SDL_Rect L_destino = {.x= 470, .y= 10, .w= 20, .h= 35};
@@ -67,6 +86,8 @@ void init(){
     SDL_Texture* lapNumber = IMG_LoadTexture(renderer, "assets/images/numbers.png");
     SDL_Rect lapNumberDestino = {.x= 555, .y= 9, .w= 30, .h= 40};
      SDL_Rect lapNumberOrigem = {.x= 17, .y= 3, .w= 13, .h= 18};
+
+    menu(renderer);
 
     while(running){
 
