@@ -22,7 +22,14 @@ void desacelerate(Car* carro, Speedometer* speedometer);
 
 void brake(Car* carro);
 
-void updateCarCoordinates(Car* carro, string direction);
+void updateCarCoordinates(Car* carro, Speedway* pista);
 
 void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer);
+
+void incrementCurrentLap(Car* carro, SDL_Rect* lapNumberOrigem);
+
+bool isNewLap(Speedway* pista, Car *carro);
+
+void removeLapIncrementBlock(Speedway* pista, Car *carro);
+
 #endif // CARLIB_H

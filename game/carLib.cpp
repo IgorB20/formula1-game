@@ -6,7 +6,43 @@
 
 using namespace std;
 
+void incrementCurrentLap(Car* carro, SDL_Rect* lapNumberOrigem){
+   carro->current_lap++;
+   carro->block_lap_increment = true;
+   lapNumberOrigem->x += lapNumberOrigem->w;
+};
+
+bool isNewLap(Speedway* pista, Car *carro){
+    // CHECA SE O CARRO PASSOU DA LARGADA
+
+    //usando coordenadas da pista por enquanto (tem q fazer uma função pra pegar as coordenadas do carrinho na textura dda pista)
+    if(pista->destino.x <= -2970 && pista->destino.x >= -3210 &&
+            pista->destino.y <= -1326 && pista->destino.y >= -1335){
+
+        if(!carro->block_lap_increment){
+            return true;
+        }
+
+    }
+    return false;
+}
+
 void moveUp(Speedway* pista, Car *carro){
+
+
+
+    //o parametro carro nao precisa ser um ponteiro nessa função!!
+    pista->destino.y += carro->speed * cos(degreesToRadians(carro->angle));
+    pista->destino.x += carro->speed * sin(degreesToRadians(carro->angle));
+
+
+    updateCarCoordinates(carro, pista);
+    removeLapIncrementBlock(pista, carro);
+
+    cout << carro->coordinates.x << ", " << carro->coordinates.y << endl;
+
+    //cout << testex  << ", " << testey << endl;
+    //cout << carro->speed << endl;
 
     //int testex = (carro->coordinates.x) - 3000;
     //int testey = (carro->coordinates.y) - 1400;
@@ -27,61 +63,42 @@ void moveUp(Speedway* pista, Car *carro){
 
 
      //SDL_UnlockSurface(pista->surface);
-
-    //o parametro carro nao precisa ser um ponteiro nessa função!!
-    pista->destino.y += carro->speed * cos(degreesToRadians(carro->angle));
-    pista->destino.x += carro->speed * sin(degreesToRadians(carro->angle));
-
-
-    updateCarCoordinates(carro, "UP");
-
-
-    //cout << testex  << ", " << testey << endl;
-    cout << carro->speed << endl;
-
-    //A VERIFICAÇÃO DE COLISÃO COM AS PAREDES TEM Q SER FEITA QUANDO OC ARRO ESTIVER DANDO RÉ TAMBÉM!!
-
-    //down
-    //if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) >= (3584 - carro->destino.h)) return;
-
-    //up -> DANDO ERRADO
-    //if(carro->coordinates.y - carro->speed * cos(degreesToRadians(carro->angle)) <= (0 - carro->destino.h)) return;
-
-    //right
-    //if(carro->coordinates.x - carro->speed * sin(degreesToRadians(carro->angle)) >= (3584 - carro->destino.w)) return;
-
-    //left ->DANDO ERRADO
-    //if(carro->coordinates.x - carro->speed * sin(degreesToRadians(carro->angle)) <= (0 + carro->destino.w)) return;
-
 }
+
+
 
 void moveDown(Speedway* pista, Car *carro){
     pista->destino.y -= carro->speed * cos(degreesToRadians(carro->angle));
     pista->destino.x -= carro->speed * sin(degreesToRadians(carro->angle));
 
-    updateCarCoordinates(carro, "DOWN");
+    //updateCarCoordinates(carro, "DOWN");
 }
 
-void updateCarCoordinates(Car* carro, string direction){
 
-    if(direction == "DOWN"){
-        carro->coordinates.y += carro->speed * cos(degreesToRadians(carro->angle));
-        carro->coordinates.x += carro->speed * sin(degreesToRadians(carro->angle));
-     }
+void removeLapIncrementBlock(Speedway* pista, Car *carro){
+    //tira o bloqueio de incrementar o lap
+    if(pista->destino.x <= 215 && pista->destino.x >= -117 &&
+            pista->destino.y <= -1326 && pista->destino.y >= -1335){
 
-     if(direction == "UP"){
-        carro->coordinates.y -= carro->speed * cos(degreesToRadians(carro->angle));
-        carro->coordinates.x -= carro->speed * sin(degreesToRadians(carro->angle));
-     }
+        carro->block_lap_increment = false;
+
+    }
+}
+
+void updateCarCoordinates(Car* carro, Speedway* pista){
+
+    carro->coordinates.x = (carro->destino.x) + (pista->destino.x*-1);
+    carro->coordinates.y = (carro->destino.y) + (pista->destino.y*-1);
+
 };
 
 void turnLeft(Car* carro){
-    //if(carro->speed <= 1) return;
+    if(carro->speed == 0) return;
     carro->angle += 2;
 };
 
 void turnRight(Car* carro){
-     //if(carro->speed <= 1) return;
+     if(carro->speed == 0) return;
      carro->angle -= 2;
 };
 

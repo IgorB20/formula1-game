@@ -50,18 +50,47 @@ void init(){
     speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
 
 
+    SDL_Texture* lapText = IMG_LoadTexture(renderer, "assets/images/letters.png");
+    //L
+    SDL_Rect L_destino = {.x= 470, .y= 10, .w= 20, .h= 35};
+    SDL_Rect L_origem = {.x= 111, .y= 89, .w= 49, .h= 79};
+
+    //A
+    SDL_Rect A_destino = {.x= 495, .y= 10, .w= 20, .h= 35};
+    SDL_Rect A_origem = {.x= 9, .y= 3, .w= 49, .h= 79};
+
+    //P
+    SDL_Rect P_destino = {.x= 520, .y= 10, .w= 20, .h= 35};
+    SDL_Rect P_origem = {.x= 316, .y= 89, .w= 49, .h= 79};
+
+
+    SDL_Texture* lapNumber = IMG_LoadTexture(renderer, "assets/images/numbers.png");
+    SDL_Rect lapNumberDestino = {.x= 555, .y= 9, .w= 30, .h= 40};
+     SDL_Rect lapNumberOrigem = {.x= 17, .y= 3, .w= 13, .h= 18};
+
     while(running){
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, pista.texture, NULL, &pista.destino);
         SDL_RenderCopy(renderer, speedometer.textureSpeedometer, NULL, &speedometer.destinoSpeedometer);
+
+        SDL_RenderCopy(renderer, lapText, &L_origem, &L_destino);
+        SDL_RenderCopy(renderer, lapText, &A_origem, &A_destino);
+        SDL_RenderCopy(renderer, lapText, &P_origem, &P_destino);
+
+        SDL_RenderCopy(renderer, lapNumber, &lapNumberOrigem, &lapNumberDestino);
+
         SDL_RenderCopyEx(renderer, speedometer.textureArrow, NULL, &speedometer.destinoArrow, speedometer.angle, &speedometer.rotation_axis, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, carro.texture, NULL, &carro.destino, carro.angle*-1, NULL, SDL_FLIP_NONE);
+
+
 
         SDL_RenderPresent(renderer);
 
         handleEvents(running, &carro);
         handleCarDirections(&carro, &pista, &speedometer);
+
+        if(isNewLap(&pista, &carro)) incrementCurrentLap(&carro, &lapNumberOrigem);
 
         SDL_Delay(1000/60);//60 FPS
     }
