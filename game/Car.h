@@ -17,6 +17,7 @@ struct Car {
     Direction direction;
     SDL_Texture* texture = nullptr;
     SDL_Rect destino;
+    SDL_Rect origem;
 };
 
 

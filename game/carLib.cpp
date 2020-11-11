@@ -30,12 +30,13 @@ bool isNewLap(Speedway* pista, Car *carro){
 void moveUp(Speedway* pista, Car *carro){
     if(carro->speed == 0) return;
 
-  /*
+
     SDL_LockSurface(pista->surface);
     // cout << SDL_GetError() << endl;
     int testex = carro->coordinates.x/3.5;
     int testey = carro->coordinates.y/3.5;
     //cout << testex << ", " << testey << endl;
+
 
 
     Uint32 pixelData = getpixel(pista->surface, testex, testey);
@@ -44,15 +45,13 @@ void moveUp(Speedway* pista, Car *carro){
     int green = ((pixelData >> 8) & 255);
     int blue = ((pixelData >> 16) & 255);
 
-    cout << red << ", " << green << ", " << ", " <<  blue << endl;
+    //cout << red << ", " << green << ", " << ", " <<  blue << endl;
     SDL_UnlockSurface(pista->surface);
 
-    if(red == 115 && green == 123 && blue == 132 || red == 115 && green == 115 && blue == 123){
-
+    /*if(red == 206 && green == 66 && blue == 57 || red == 148 && green == 8 && blue == 0){
+        return;
     }*/
 
-
-    //o parametro carro nao precisa ser um ponteiro nessa função!!
     pista->destino.y += carro->speed * cos(degreesToRadians(carro->angle));
     pista->destino.x += carro->speed * sin(degreesToRadians(carro->angle));
 
@@ -85,8 +84,9 @@ void moveUp(Speedway* pista, Car *carro){
 
 
 void moveDown(Speedway* pista, Car *carro){
-    pista->destino.y -= carro->speed * cos(degreesToRadians(carro->angle));
-    pista->destino.x -= carro->speed * sin(degreesToRadians(carro->angle));
+    carro->speed = -2;
+    pista->destino.y += carro->speed * cos(degreesToRadians(carro->angle));
+    pista->destino.x += carro->speed * sin(degreesToRadians(carro->angle));
 
     //updateCarCoordinates(carro, "DOWN");
 }
@@ -110,12 +110,14 @@ void updateCarCoordinates(Car* carro, Speedway* pista){
 };
 
 void turnLeft(Car* carro){
+    carro->origem.x = 81;
     //if(carro->speed == 0) return;
     carro->angle += 2;
 };
 
 void turnRight(Car* carro){
-     if(carro->speed == 0) return;
+        carro->origem.x = 935;
+     //if(carro->speed == 0) return;
      carro->angle -= 2;
 };
 
@@ -170,11 +172,12 @@ void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer){
 
     if(carro->direction.right) turnRight(carro);
 
+    if(!carro->direction.right && !carro->direction.left) carro->origem.x = 503;
 
    if(carro->direction.down){
-       //FAZER FUNÇÃO DE FREIO!!
-       //desacelerate(carro);
+
        if(carro->speed == 0){
+            //carro->speed = -3;
             moveDown(pista, carro);
        }else{
            //freiar
@@ -183,6 +186,7 @@ void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer){
        }
     }
 
-    moveUp(pista, carro);
+ moveUp(pista, carro);
+
 
 }

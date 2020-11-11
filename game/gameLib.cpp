@@ -1,10 +1,29 @@
 #include <gameLib.h>
 #include <iostream>
 #include <vector>
+#include <botLib.h>
 
 using namespace std;
 
 
+void menu( SDL_Renderer * renderer ){
+    bool menuAtivo = true;
+    SDL_RenderCopy(renderer, IMG_LoadTexture(renderer,"assets/images/menucom.bmp"), NULL, NULL);
+
+    SDL_RenderPresent(renderer);
+    SDL_Delay(1000 / 60); // 60 fps
+    while (menuAtivo) {
+        SDL_Event evento;
+
+        SDL_PollEvent(&evento);
+
+        if (evento.type == SDL_KEYDOWN) {
+            if (evento.key.keysym.sym == SDLK_KP_ENTER || evento.key.keysym.sym == SDLK_RETURN) {
+                menuAtivo = false;
+            }
+        }
+    }
+}
 
 void init(){
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -33,11 +52,24 @@ void init(){
     carro.speed = 0;
     carro.acceleration = 0.1;
     carro.max_speed = 12;
-    carro.texture = IMG_LoadTexture(renderer, "assets/images/carro.png");
-    carro.destino = {.x= 265, .y= 410, .w= 37*2, .h= 54*2,};
+    carro.texture = IMG_LoadTexture(renderer, "assets/images/carro-sprites.png");
+    carro.destino = {.x= 265, .y= 410, .w= 50, .h= 75,};
+    carro.origem = {.x= 503, .y= 99, .w= 281, .h= 477,};
     carro.angle = 0;
     carro.coordinates.x = (carro.destino.x) + (pista.destino.x*-1);
     carro.coordinates.y = (carro.destino.y) + (pista.destino.y*-1);
+
+
+    Car bot;
+
+    bot.speed = 0;
+    bot.acceleration = 0.1;
+    bot.max_speed = 12;
+    bot.texture = IMG_LoadTexture(renderer, "assets/images/carro.png");
+    bot.destino = {.x= 380, .y= 520, .w= 37*2, .h= 54*2,};
+    bot.angle = 0;
+    bot.coordinates.x = (bot.destino.x) + (bot.destino.x*-1);
+    bot.coordinates.y = (bot.destino.y) + (bot.destino.y*-1);
 
 
     Speedometer speedometer;
@@ -48,6 +80,7 @@ void init(){
     speedometer.destinoArrow = {.x= 20, .y= 540, .w= 113, .h= 20,};
     speedometer.textureSpeedometer = IMG_LoadTexture(renderer, "assets/images/speedometer.png");
     speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
+
 
 
     SDL_Texture* lapText = IMG_LoadTexture(renderer, "assets/images/letters.png");
@@ -65,16 +98,19 @@ void init(){
 
 
     SDL_Texture* lapNumber = IMG_LoadTexture(renderer, "assets/images/numbers.png");
-    SDL_Rect lapNumberDestino = {.x= 555, .y= 9, .w= 30, .h= 40};
-     SDL_Rect lapNumberOrigem = {.x= 17, .y= 3, .w= 13, .h= 18};
+    SDL_Rect lapNumberDestino = {.x= 555, .y= 9, .w= 25, .h= 35};
+     SDL_Rect lapNumberOrigem = {.x= 122, .y= 18, .w= 90, .h= 144};
 
 
+    menu(renderer);
 
 
     while(running){
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, pista.texture, NULL, &pista.destino);
+
+        //SDL_RenderCopyEx(renderer, bot.texture, NULL, &bot.destino, bot.angle*-1, NULL, SDL_FLIP_NONE);
         SDL_RenderCopy(renderer, speedometer.textureSpeedometer, NULL, &speedometer.destinoSpeedometer);
 
         SDL_RenderCopy(renderer, lapText, &L_origem, &L_destino);
@@ -84,7 +120,9 @@ void init(){
         SDL_RenderCopy(renderer, lapNumber, &lapNumberOrigem, &lapNumberDestino);
 
         SDL_RenderCopyEx(renderer, speedometer.textureArrow, NULL, &speedometer.destinoArrow, speedometer.angle, &speedometer.rotation_axis, SDL_FLIP_NONE);
-        SDL_RenderCopyEx(renderer, carro.texture, NULL, &carro.destino, carro.angle*-1, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, carro.texture, &carro.origem, &carro.destino, carro.angle*-1, NULL, SDL_FLIP_NONE);
+
+
 
 
 
@@ -92,6 +130,7 @@ void init(){
 
         handleEvents(running, &carro);
         handleCarDirections(&carro, &pista, &speedometer);
+        adjustBotPosition(&bot, carro, pista);
 
         if(isNewLap(&pista, &carro)) incrementCurrentLap(&carro, &lapNumberOrigem);
 
