@@ -12,6 +12,7 @@ SOURCES += \
         carLib.cpp \
         gameLib.cpp \
         main.cpp \
+        playerLib.cpp \
         speedometer.cpp \
         utils.cpp
 
@@ -31,7 +32,9 @@ INCLUDEPATH += $$PWD/../../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 DEPENDPATH += $$PWD/../../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 
 HEADERS += \
+    Bot.h \
     Car.h \
+    Player.h \
     Race.h \
     Direction.h \
     Race.h \
@@ -40,5 +43,6 @@ HEADERS += \
     botLib.h \
     carLib.h \
     gameLib.h \
+    playerLib.h \
     speedometerlib.h \
     utils.h
