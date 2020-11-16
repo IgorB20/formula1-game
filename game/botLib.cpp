@@ -27,7 +27,7 @@ void move(Bot* bot, Speedway* pista){
 
     if(!isSpeedwayColor(red, green, blue) ){
 
-        float anguloToLeft = bot->carro.angle + 15;
+        float anguloToLeft = bot->carro.angle + 20;
 
         int x_left = testex - bot->carro.speed * sin(degreesToRadians(anguloToLeft))*8;
         int y_left = testey - bot->carro.speed * cos(degreesToRadians(anguloToLeft))*8;
@@ -37,7 +37,7 @@ void move(Bot* bot, Speedway* pista){
         int g_left = ((pixelDataLeft >> 8) & 255);
         int b_left = ((pixelDataLeft >> 16) & 255);
 
-        float anguloToRight = bot->carro.angle - 15;
+        float anguloToRight = bot->carro.angle - 20;
         int x_right = testex - bot->carro.speed * sin(degreesToRadians(anguloToRight))*8;
         int y_right = testey - bot->carro.speed * cos(degreesToRadians(anguloToRight))*8;
         Uint32 pixelDataRight = getpixel(pista->surface, x_right, y_right);

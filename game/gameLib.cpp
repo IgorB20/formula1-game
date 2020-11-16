@@ -79,10 +79,10 @@ void init(){
     bot.rotation_axis.y = 0 - (bot.carro.destino.y - player.carro.destino.y);
     bot.carro.speed = 0;
     bot.carro.acceleration = 0.1;
-    bot.carro.max_speed = 8;
+    bot.carro.max_speed = 11;
     bot.carro.texture = IMG_LoadTexture(renderer, "assets/images/bot1.png");
-    bot.carro.destino = {.x= 300, .y= 300, .w= 70, .h= 100,};
-    bot.carro.origem = {.x= 350, .y= 3, .w= 43, .h= 45,};
+    bot.carro.destino = {.x= 275, .y= 300, .w= 75, .h= 100,};
+    //bot.carro.origem = {.x= 350, .y= 3, .w= 43, .h= 45,};
     bot.x = bot.carro.destino.x;
     bot.y = bot.carro.destino.y;
     bot.carro.coordinates.x = (bot.carro.destino.x) + (pista.destino.x*-1);
@@ -117,9 +117,9 @@ void init(){
     while(running){
 
         SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, pista.texture, NULL, &pista.destino, player.carro.angle, &player.center, SDL_FLIP_NONE);
-
-        SDL_RenderCopyEx(renderer, bot.carro.texture, &bot.carro.origem, &bot.carro.destino, player.carro.angle, &bot.rotation_axis, SDL_FLIP_NONE);
+        //SDL_RenderCopyEx(renderer, pista.texture, NULL, &pista.destino, player.carro.angle, &player.center, SDL_FLIP_NONE);
+        SDL_RenderCopy(renderer, pista.texture, NULL, &pista.destino);
+        SDL_RenderCopyEx(renderer, bot.carro.texture, NULL, &bot.carro.destino, bot.carro.angle*-1, NULL, SDL_FLIP_NONE);
 
          SDL_RenderCopy(renderer, player.speedometer.textureSpeedometer, NULL, &player.speedometer.destinoSpeedometer);
          SDL_RenderCopyEx(renderer, player.speedometer.textureArrow, NULL, &player.speedometer.destinoArrow, player.speedometer.angle, &player.speedometer.rotation_axis, SDL_FLIP_NONE);
@@ -131,7 +131,8 @@ void init(){
         SDL_RenderCopy(renderer, lapNumber, &lapNumberOrigem, &lapNumberDestino);
 
 
-        SDL_RenderCopy(renderer, player.carro.texture, &player.carro.origem, &player.carro.destino);
+        //SDL_RenderCopy(renderer, player.carro.texture, &player.carro.origem, &player.carro.destino);
+        SDL_RenderCopyEx(renderer, player.carro.texture, &player.carro.origem, &player.carro.destino, player.carro.angle*-1, NULL, SDL_FLIP_NONE);
 
         SDL_RenderPresent(renderer);
 
