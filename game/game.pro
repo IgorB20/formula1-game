@@ -8,9 +8,11 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        botLib.cpp \
         carLib.cpp \
         gameLib.cpp \
         main.cpp \
+        playerLib.cpp \
         speedometer.cpp \
         utils.cpp
 
@@ -35,14 +37,18 @@ INCLUDEPATH += $$PWD/../../SDL2_mixer-2.0.4/x86_64-w64-mingw32/include
 DEPENDPATH += $$PWD/../../SDL2_mixer-2.0.4/x86_64-w64-mingw32/include
 
 HEADERS += \
+    Bot.h \
     Car.h \
+    Player.h \
     Race.h \
     Direction.h \
     Race.h \
     Speedometer.h \
     Speedway.h \
+    botLib.h \
     carLib.h \
     gameLib.h \
+    playerLib.h \
     speedometerlib.h \
     utils.h
 

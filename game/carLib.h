@@ -8,23 +8,23 @@
 
 using namespace std;
 
-void moveUp(Speedway* pista, Car *carro);
+//void moveUp(Speedway* pista, Car *carro);
 
-void moveDown(Speedway* pista, Car carro);
+//void moveDown(Speedway* pista, Car carro);
 
 void turnLeft(Car* carro);
 
 void turnRight(Car* carro);
 
-void accelerate(Car* carro, Speedometer* speedometer);
+void accelerate(Car* carro);
 
-void desacelerate(Car* carro, Speedometer* speedometer);
+void desacelerate(Car* carro);
 
 void brake(Car* carro);
 
 void updateCarCoordinates(Car* carro, Speedway* pista);
 
-void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer);
+//void handleCarDirections(Car* carro, Speedway* pista, Speedometer* speedometer);
 
 void incrementCurrentLap(Car* carro, SDL_Rect* lapNumberOrigem);
 
