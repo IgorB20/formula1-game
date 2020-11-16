@@ -29,6 +29,11 @@ win32: LIBS += -L$$PWD/../../SDL2_image-2.0.5/x86_64-w64-mingw32/lib/ -lSDL2_ima
 INCLUDEPATH += $$PWD/../../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 DEPENDPATH += $$PWD/../../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 
+win32: LIBS += -L$$PWD/../../SDL2_mixer-2.0.4/x86_64-w64-mingw32/lib/ -lSDL2_mixer
+
+INCLUDEPATH += $$PWD/../../SDL2_mixer-2.0.4/x86_64-w64-mingw32/include
+DEPENDPATH += $$PWD/../../SDL2_mixer-2.0.4/x86_64-w64-mingw32/include
+
 HEADERS += \
     Car.h \
     Race.h \
@@ -40,3 +45,5 @@ HEADERS += \
     gameLib.h \
     speedometerlib.h \
     utils.h
+
+

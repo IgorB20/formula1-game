@@ -7,8 +7,11 @@ using namespace std;
 
 void menu( SDL_Renderer * renderer ){
     bool menuAtivo = true;
-    SDL_RenderCopy(renderer, IMG_LoadTexture(renderer,"assets/images/menucom.bmp"), NULL, NULL);
 
+    SDL_RenderCopy(renderer, IMG_LoadTexture(renderer,"assets/images/menucom.bmp"), NULL, NULL);
+    Mix_Music* music = Mix_LoadMUS("assets/sounds/music.mp3");
+
+    Mix_PlayMusic(music, -1);
     SDL_RenderPresent(renderer);
     SDL_Delay(1000 / 60); // 60 fps
     while (menuAtivo) {
@@ -19,6 +22,7 @@ void menu( SDL_Renderer * renderer ){
         if (evento.type == SDL_KEYDOWN) {
             if (evento.key.keysym.sym == SDLK_KP_ENTER || evento.key.keysym.sym == SDLK_RETURN) {
                 menuAtivo = false;
+                Mix_FreeMusic(music);
             }
         }
     }
@@ -36,9 +40,11 @@ void init(){
 
     SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
 
+
     //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
     bool running = true;
+    Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2, 4096);
 
     Speedway pista;
     pista.surface = IMG_Load("assets/images/speedway.png");
@@ -47,7 +53,6 @@ void init(){
 
 
     Car carro;
-
     carro.speed = 0;
     carro.acceleration = 0.1;
     carro.max_speed = 12;
@@ -56,6 +61,8 @@ void init(){
     carro.angle = 0;
     carro.coordinates.x = (carro.destino.x) + (pista.destino.x*-1);
     carro.coordinates.y = (carro.destino.y) + (pista.destino.y*-1);
+
+
 
 
     Speedometer speedometer;
@@ -116,6 +123,9 @@ void init(){
         SDL_Delay(1000/60);//60 FPS
     }
 
+
+    Mix_CloseAudio();
+
     SDL_DestroyTexture(pista.texture);
     SDL_DestroyTexture(carro.texture);
 
@@ -124,7 +134,10 @@ void init(){
     SDL_DestroyTexture(speedometer.textureArrow);
     SDL_DestroyTexture(speedometer.textureSpeedometer);
 
+
     SDL_DestroyWindow(window);
+
+
 
     SDL_Quit();
 

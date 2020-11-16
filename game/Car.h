@@ -1,6 +1,7 @@
 #ifndef CAR_H
 #define CAR_H
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <Direction.h>
 
 struct Car {
