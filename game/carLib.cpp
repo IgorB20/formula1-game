@@ -69,6 +69,7 @@ void desacelerate(Car* carro){
             }else{
                 carro->speed -= 0.04;
             }
+            Mix_PlayChannel(0,carro->Sound,0);
         }
 }
 
@@ -76,14 +77,17 @@ void desacelerate(Car* carro){
 
 void accelerate(Car* carro){
 
+
+    if(carro->isOnGrass) carro->max_speed = 5;
+    else carro->max_speed = 12;
+
     if(carro->speed >= carro->max_speed){
         carro->speed = carro->max_speed;
+        Mix_PlayChannel(0,carro->Sound,0);
         return;
     }
-    /*
-    if(carro->isOnGrass) carro->max_speed = 5;
-    else carro->max_speed = 12;*/
    carro->speed += carro->acceleration;
+   Mix_PlayChannel(0,carro->Sound,0);
    //ArrowAngleAcc(speedometer);
 
 };

@@ -12,18 +12,28 @@ using namespace std;
 
 void menu( SDL_Renderer * renderer ){
     bool menuAtivo = true;
-    SDL_RenderCopy(renderer, IMG_LoadTexture(renderer,"assets/images/menucom.bmp"), NULL, NULL);
 
+    SDL_RenderCopy(renderer, IMG_LoadTexture(renderer,"assets/images/menucom.bmp"), NULL, NULL);
+    Mix_Music* musicMenu = Mix_LoadMUS("assets/sounds/Music Menu.mp3");
+    Mix_Music* music = Mix_LoadMUS("assets/sounds/Music.mp3");
+    Mix_PlayMusic(musicMenu, -1);
     SDL_RenderPresent(renderer);
     SDL_Delay(1000 / 60); // 60 fps
     while (menuAtivo) {
         SDL_Event evento;
 
         SDL_PollEvent(&evento);
+        if(evento.type == SDL_QUIT){
+
+            SDL_Quit();
+        }
 
         if (evento.type == SDL_KEYDOWN) {
             if (evento.key.keysym.sym == SDLK_KP_ENTER || evento.key.keysym.sym == SDLK_RETURN) {
                 menuAtivo = false;
+                Mix_PlayMusic(music,-1);
+                Mix_FreeMusic(musicMenu);
+                Mix_VolumeMusic(50);
             }
         }
     }
@@ -66,6 +76,8 @@ void init(){
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
         cout << SDL_GetError() << endl;
 
+      Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2, 6096);
+
     SDL_Window* window = SDL_CreateWindow("Minha janela em SDL",
                                              SDL_WINDOWPOS_CENTERED,
                                              SDL_WINDOWPOS_CENTERED,
@@ -74,23 +86,50 @@ void init(){
 
     SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
 
-    //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-
     bool running = true;
 
+
+
+
     Speedway pista;
-    pista.destino = {.x= -3000, .y= -1400, .w=static_cast<int>(1024*3.5), .h= static_cast<int>(1024*3.5),};
+    pista.destino = {.x= -3000, .y= -1660, .w=static_cast<int>(1024*3.5), .h= static_cast<int>(1024*3.5),};
+    pista.x = pista.destino.x;
+    pista.y = pista.destino.y;
     pista.surface = IMG_Load("assets/images/speedway.png");
     pista.texture = SDL_CreateTextureFromSurface(renderer, pista.surface);
     //pista.texture = IMG_LoadTexture(renderer, "assets/images/speedway.png");
 
 
+
+    Car carro;
+    carro.speed = 0;
+    carro.acceleration = 0.1;
+    carro.max_speed = 12;
+    carro.texture = IMG_LoadTexture(renderer, "assets/images/carro.png");
+    carro.destino = {.x= 265, .y= 410, .w= 37*2, .h= 54*2,};
+    carro.angle = 0;
+    carro.coordinates.x = (carro.destino.x) + (pista.destino.x*-1);
+    carro.coordinates.y = (carro.destino.y) + (pista.destino.y*-1);
+
+
+
+
+
+    Speedometer speedometer;
+    speedometer.angle = 0;
+    speedometer.rotation_axis.x = 113;
+    speedometer.rotation_axis.y = 10;
+    speedometer.textureArrow = IMG_LoadTexture(renderer, "assets/images/arrow.png");
+    speedometer.destinoArrow = {.x= 20, .y= 540, .w= 113, .h= 20,};
+    speedometer.textureSpeedometer = IMG_LoadTexture(renderer, "assets/images/speedometer.png");
+    speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
+
     Player player;
     player.carro.pilot_name = "You";
-    player.carro.race_position = 1;
+    player.carro.race_position = 3;
     player.carro.speed = 0;
-    player.carro.acceleration = 0.1;
-    player.carro.max_speed = 12;
+    player.carro.acceleration = 0.15;
+    player.carro.max_speed = 12.5;
     player.carro.texture = IMG_LoadTexture(renderer, "assets/images/carro-sprites.png");
     player.carro.destino = {.x= 280, .y= 415, .w= 50, .h= 85,};
     player.carro.origem = {.x= 503, .y= 99, .w= 281, .h= 477,};
@@ -107,39 +146,40 @@ void init(){
     player.speedometer.destinoArrow = {.x= 20, .y= 540, .w= 113, .h= 20,};
     player.speedometer.textureSpeedometer = IMG_LoadTexture(renderer, "assets/images/speedometer.png");
     player.speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
+    player.carro.Sound = Mix_LoadWAV("assets/sounds/Car Engine.wav");
 
 
     Bot bot1;
     bot1.carro.pilot_name = "Airton Senna";
     bot1.carro.race_position = 2;
     bot1.carro.direction.up = true;
-    /*
-    bot.rotation_axis.x = 0 - (bot.carro.destino.x - player.carro.destino.x);
-    bot.rotation_axis.y = 0 - (bot.carro.destino.y - player.carro.destino.y);
-*/
     bot1.carro.speed = 0;
     bot1.carro.acceleration = 0.1;
-    bot1.carro.max_speed = 10.6;
+    bot1.carro.max_speed = 12;
     bot1.carro.texture = IMG_LoadTexture(renderer, "assets/images/bot1.png");
-    bot1.carro.destino = {.x= 400, .y= 550, .w= 75, .h= 100,};
+    bot1.carro.destino = {.x= 380, .y= 265, .w= 75, .h= 100,};
     bot1.x = bot1.carro.destino.x;
     bot1.y = bot1.carro.destino.y;
     bot1.carro.coordinates.x = (bot1.carro.destino.x) + (pista.destino.x*-1);
     bot1.carro.coordinates.y = (bot1.carro.destino.y) + (pista.destino.y*-1);
-
+    /*
+    bot.rotation_axis.x = 0 - (bot.carro.destino.x - player.carro.destino.x);
+    bot.rotation_axis.y = 0 - (bot.carro.destino.y - player.carro.destino.y);
+*/
     Bot bot2;
     bot2.carro.pilot_name = "Felipe massa";
-    bot2.carro.race_position = 2;
+    bot2.carro.race_position = 1;
     bot2.carro.direction.up = true;
     bot2.carro.speed = 0;
-    bot2.carro.acceleration = 0.2;
-    bot2.carro.max_speed = 10.5;
-    bot2.carro.texture = IMG_LoadTexture(renderer, "assets/images/bot1.png");
-    bot2.carro.destino = {.x= 300, .y= 300, .w= 75, .h= 100,};
+    bot2.carro.acceleration = 0.14;
+    bot2.carro.max_speed = 11.94;
+    bot2.carro.texture = IMG_LoadTexture(renderer, "assets/images/bot2.png");
+    bot2.carro.destino = {.x= 265, .y= 155, .w= 75, .h= 100,};
     bot2.x = bot2.carro.destino.x;
     bot2.y = bot2.carro.destino.y;
     bot2.carro.coordinates.x = (bot2.carro.destino.x) + (pista.destino.x*-1);
     bot2.carro.coordinates.y = (bot2.carro.destino.y) + (pista.destino.y*-1);
+
 
 
 
@@ -165,7 +205,7 @@ void init(){
 
     menu(renderer);
 
-    int maxLaps = 1;
+    //int maxLaps = 1;
     vector<Bot*> bots;
     bots.push_back(&bot1);
     bots.push_back(&bot2);
@@ -236,10 +276,17 @@ void init(){
         SDL_Delay(1000/60);//60 FPS
     }
 
+    Mix_FreeChunk(player.carro.Sound);
+    Mix_CloseAudio();
+
     SDL_DestroyTexture(pista.texture);
     SDL_DestroyTexture(player.carro.texture);
 
     SDL_FreeSurface(pista.surface);
+
+    SDL_DestroyTexture(speedometer.textureArrow);
+    SDL_DestroyTexture(speedometer.textureSpeedometer);
+
 
     SDL_DestroyTexture(player.speedometer.textureArrow);
     SDL_DestroyTexture(player.speedometer.textureSpeedometer);
@@ -248,6 +295,8 @@ void init(){
     }
 
     SDL_DestroyWindow(window);
+
+        cout << SDL_GetError() << endl;
 
     SDL_Quit();
 

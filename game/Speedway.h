@@ -8,8 +8,8 @@ struct Speedway{
     SDL_Texture* texture = nullptr;
     SDL_Surface* surface = nullptr;
     SDL_Rect destino;
-    float x = -3000;
-    float y = -1400;
+    float x;
+    float y;
 
 };
 

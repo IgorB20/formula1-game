@@ -19,14 +19,14 @@ void moveUp(Player *player, Speedway *pista){
         //updatePlayerCenterPoint(player);
 
 
-    //SDL_LockSurface(pista->surface);
+    SDL_LockSurface(pista->surface);
     // cout << SDL_GetError() << endl;
-    //int testex = carro->coordinates.x/3.5;
-    //int testey = carro->coordinates.y/3.5;
+    int testex = player->carro.coordinates.x/3.5;
+    int testey = player->carro.coordinates.y/3.5;
     //cout << testex << ", " << testey << endl;
 
 
-/*
+
     Uint32 pixelData = getpixel(pista->surface, testex, testey);
     //cout << pixelData << endl;
     int red = (pixelData & 255);
@@ -41,11 +41,11 @@ void moveUp(Player *player, Speedway *pista){
                 (red == 41 && green == 181 && blue == 57)
             ){
 
-            carro->isOnGrass = true;
+            player->carro.isOnGrass = true;
 
     }else{
-        carro->isOnGrass = false;
-    }*/
+        player->carro.isOnGrass = false;
+    }
 
     //carro->speed = 2;
     //cout << carro->coordinates.x << ", " << carro->coordinates.y << endl;

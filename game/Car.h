@@ -1,6 +1,7 @@
 #ifndef CAR_H
 #define CAR_H
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <Direction.h>
 #include <string>
 
@@ -18,6 +19,7 @@ struct Car {
     bool block_lap_increment = true; //não deixa ficar atualizando infinitamente o lap atual
     bool isOnGrass = false;
     string pilot_name;
+    Mix_Chunk* Sound = nullptr;
     SDL_Point coordinates;
     Direction direction;
     SDL_Texture* texture = nullptr;
