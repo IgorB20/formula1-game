@@ -6,7 +6,7 @@
 struct Player{
     Car carro;
     Speedometer speedometer;
-    SDL_Point center;
+    //SDL_Point center;
 };
 
 #endif // PLAYER_H

@@ -5,8 +5,8 @@
 struct Bot{
     float x;
     float y;
-    SDL_Point rotation_axis;
     Car carro;
+    //SDL_Point rotation_axis;
 };
 
 #endif // BOT_H

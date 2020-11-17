@@ -9,6 +9,6 @@ void moveUp(Player *player, Speedway *pista);
 
 void moveDown(Speedway* pista, Car *carro);
 
-void updatePlayerCenterPoint(Player *player);
+//void updatePlayerCenterPoint(Player *player);
 
 #endif // PLAYERLIB_H

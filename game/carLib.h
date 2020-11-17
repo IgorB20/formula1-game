@@ -28,8 +28,8 @@ void updateCarCoordinates(Car* carro, Speedway* pista);
 
 void incrementCurrentLap(Car* carro, SDL_Rect* lapNumberOrigem);
 
-bool isNewLap(Speedway* pista, Car *carro);
+bool isNewLap(Car *carro);
 
-void removeLapIncrementBlock(Speedway* pista, Car *carro);
+void removeLapIncrementBlock(Car *carro);
 
 #endif // CARLIB_H

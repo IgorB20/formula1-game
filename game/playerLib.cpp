@@ -2,8 +2,7 @@
 #include <carLib.h>
 #include <math.h>
 #include <speedometerlib.h>
-
-
+#include <iostream>
 
 
 void moveUp(Player *player, Speedway *pista){
@@ -16,8 +15,8 @@ void moveUp(Player *player, Speedway *pista){
     pista->destino.x = pista->x;
 
     updateCarCoordinates(&player->carro, pista);
-    updatePlayerCenterPoint(player);
-    removeLapIncrementBlock(pista, &player->carro);
+    removeLapIncrementBlock(&player->carro);
+        //updatePlayerCenterPoint(player);
 
 
     //SDL_LockSurface(pista->surface);
@@ -79,10 +78,11 @@ void moveDown(Speedway* pista, Car *carro){
 }
 
 
+/*
 void updatePlayerCenterPoint(Player *player){
     player->center.x = player->carro.coordinates.x + (player->carro.destino.w/2);
     player->center.y = player->carro.coordinates.y + (player->carro.destino.h/2);
-};
+};*/
 
 
 void handlePlayerDirections(Player *player, Speedway *pista){

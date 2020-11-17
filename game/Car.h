@@ -2,6 +2,9 @@
 #define CAR_H
 #include <SDL2/SDL.h>
 #include <Direction.h>
+#include <string>
+
+using namespace std;
 
 struct Car {
     float speed;
@@ -14,6 +17,7 @@ struct Car {
     float angle = 0;
     bool block_lap_increment = true; //não deixa ficar atualizando infinitamente o lap atual
     bool isOnGrass = false;
+    string pilot_name;
     SDL_Point coordinates;
     Direction direction;
     SDL_Texture* texture = nullptr;

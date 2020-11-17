@@ -13,13 +13,11 @@ void incrementCurrentLap(Car* carro, SDL_Rect* lapNumberOrigem){
    lapNumberOrigem->x += lapNumberOrigem->w;
 };
 
-bool isNewLap(Speedway* pista, Car *carro){
+bool isNewLap(Car *carro){
+
     // CHECA SE O CARRO PASSOU DA LARGADA
-
-    //usando coordenadas da pista por enquanto (tem q fazer uma função pra pegar as coordenadas do carrinho na textura dda pista)
-    if(pista->destino.x <= -2970 && pista->destino.x >= -3210 &&
-            pista->destino.y <= -1326 && pista->destino.y >= -1335){
-
+    if(carro->coordinates.x <= 3458 && carro->coordinates.x >= 3258 &&
+            carro->coordinates.y <= 1760 && carro->coordinates.y >= 1711){
         if(!carro->block_lap_increment){
             return true;
         }
@@ -29,14 +27,15 @@ bool isNewLap(Speedway* pista, Car *carro){
 }
 
 
-void removeLapIncrementBlock(Speedway* pista, Car *carro){
-    //tira o bloqueio de incrementar o lap
-    if(pista->destino.x <= 215 && pista->destino.x >= -117 &&
-            pista->destino.y <= -1326 && pista->destino.y >= -1335){
+void removeLapIncrementBlock(Car *carro){
+
+    if(carro->coordinates.x <= 444 && carro->coordinates.x >= 56 &&
+            carro->coordinates.y <= 1823 && carro->coordinates.y >= 1785){
 
         carro->block_lap_increment = false;
 
     }
+
 }
 
 void updateCarCoordinates(Car* carro, Speedway* pista){

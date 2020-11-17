@@ -5,6 +5,7 @@
 #include <Bot.h>
 #include <Player.h>
 #include <playerLib.h>
+#include <math.h>
 
 using namespace std;
 
@@ -26,6 +27,39 @@ void menu( SDL_Renderer * renderer ){
             }
         }
     }
+}
+
+void checkPosition(Car *playerCar, Car* botCar){
+    int maiorX = playerCar->coordinates.x;
+    int maiorY = playerCar->coordinates.y;
+    int menorX = botCar->coordinates.x;
+    int menorY = botCar->coordinates.y;
+    if(menorX > maiorX){
+        maiorX = botCar->coordinates.x;
+        menorX = playerCar->coordinates.x;
+    }
+    if(menorY > maiorY){
+        maiorY = botCar->coordinates.y;
+        menorY = playerCar->coordinates.y;
+    }
+
+    //cout << maiorX << ", " << maiorY << endl;
+    if((maiorX - menorX) <= 150 && (maiorY - menorY <= 170)){
+        cout << "TAO PERTO!!" << endl;
+
+        float distancia = sqrt(pow((maiorX - menorX), 2) + pow((maiorY - menorY), 2));
+        cout << distancia << endl;
+        /*
+        cout << playerCar->speed * cos(degreesToRadians(playerCar->angle)) << ", ";
+        cout << playerCar->speed * sin(degreesToRadians(playerCar->angle)) << endl;
+
+        cout << botCar->speed * cos(degreesToRadians(botCar->angle)) << ", ";
+        cout << botCar->speed * sin(degreesToRadians(botCar->angle)) << endl;
+        */
+}
+
+
+
 }
 
 void init(){
@@ -52,18 +86,20 @@ void init(){
 
 
     Player player;
-
+    player.carro.pilot_name = "You";
+    player.carro.race_position = 1;
     player.carro.speed = 0;
     player.carro.acceleration = 0.1;
     player.carro.max_speed = 12;
     player.carro.texture = IMG_LoadTexture(renderer, "assets/images/carro-sprites.png");
-    player.carro.destino = {.x= 265, .y= 410, .w= 50, .h= 85,};
+    player.carro.destino = {.x= 280, .y= 415, .w= 50, .h= 85,};
     player.carro.origem = {.x= 503, .y= 99, .w= 281, .h= 477,};
     player.carro.coordinates.x = (player.carro.destino.x) + (pista.destino.x*-1);
     player.carro.coordinates.y = (player.carro.destino.y) + (pista.destino.y*-1);
-    player.center.x = player.carro.coordinates.x + (player.carro.destino.w/2);
-    player.center.y = player.carro.coordinates.y + (player.carro.destino.h/2);
 
+    /*player.center.x = player.carro.coordinates.x + (player.carro.destino.w/2);
+    player.center.y = player.carro.coordinates.y + (player.carro.destino.h/2);
+*/
     player.speedometer.angle = 0;
     player.speedometer.rotation_axis.x = 113;
     player.speedometer.rotation_axis.y = 10;
@@ -73,20 +109,37 @@ void init(){
     player.speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
 
 
-    Bot bot;
-    bot.carro.direction.up = true;
+    Bot bot1;
+    bot1.carro.pilot_name = "Airton Senna";
+    bot1.carro.race_position = 2;
+    bot1.carro.direction.up = true;
+    /*
     bot.rotation_axis.x = 0 - (bot.carro.destino.x - player.carro.destino.x);
     bot.rotation_axis.y = 0 - (bot.carro.destino.y - player.carro.destino.y);
-    bot.carro.speed = 0;
-    bot.carro.acceleration = 0.1;
-    bot.carro.max_speed = 11;
-    bot.carro.texture = IMG_LoadTexture(renderer, "assets/images/bot1.png");
-    bot.carro.destino = {.x= 275, .y= 300, .w= 75, .h= 100,};
-    //bot.carro.origem = {.x= 350, .y= 3, .w= 43, .h= 45,};
-    bot.x = bot.carro.destino.x;
-    bot.y = bot.carro.destino.y;
-    bot.carro.coordinates.x = (bot.carro.destino.x) + (pista.destino.x*-1);
-    bot.carro.coordinates.y = (bot.carro.destino.y) + (pista.destino.y*-1);
+*/
+    bot1.carro.speed = 0;
+    bot1.carro.acceleration = 0.1;
+    bot1.carro.max_speed = 10.6;
+    bot1.carro.texture = IMG_LoadTexture(renderer, "assets/images/bot1.png");
+    bot1.carro.destino = {.x= 400, .y= 550, .w= 75, .h= 100,};
+    bot1.x = bot1.carro.destino.x;
+    bot1.y = bot1.carro.destino.y;
+    bot1.carro.coordinates.x = (bot1.carro.destino.x) + (pista.destino.x*-1);
+    bot1.carro.coordinates.y = (bot1.carro.destino.y) + (pista.destino.y*-1);
+
+    Bot bot2;
+    bot2.carro.pilot_name = "Felipe massa";
+    bot2.carro.race_position = 2;
+    bot2.carro.direction.up = true;
+    bot2.carro.speed = 0;
+    bot2.carro.acceleration = 0.2;
+    bot2.carro.max_speed = 10.5;
+    bot2.carro.texture = IMG_LoadTexture(renderer, "assets/images/bot1.png");
+    bot2.carro.destino = {.x= 300, .y= 300, .w= 75, .h= 100,};
+    bot2.x = bot2.carro.destino.x;
+    bot2.y = bot2.carro.destino.y;
+    bot2.carro.coordinates.x = (bot2.carro.destino.x) + (pista.destino.x*-1);
+    bot2.carro.coordinates.y = (bot2.carro.destino.y) + (pista.destino.y*-1);
 
 
 
@@ -112,14 +165,20 @@ void init(){
 
     menu(renderer);
 
-
+    int maxLaps = 1;
+    vector<Bot*> bots;
+    bots.push_back(&bot1);
+    bots.push_back(&bot2);
 
     while(running){
 
         SDL_RenderClear(renderer);
         //SDL_RenderCopyEx(renderer, pista.texture, NULL, &pista.destino, player.carro.angle, &player.center, SDL_FLIP_NONE);
         SDL_RenderCopy(renderer, pista.texture, NULL, &pista.destino);
-        SDL_RenderCopyEx(renderer, bot.carro.texture, NULL, &bot.carro.destino, bot.carro.angle*-1, NULL, SDL_FLIP_NONE);
+        for(Bot* bot : bots){
+            SDL_RenderCopyEx(renderer, bot->carro.texture, NULL, &bot->carro.destino, bot->carro.angle*-1, NULL, SDL_FLIP_NONE);
+        }
+
 
          SDL_RenderCopy(renderer, player.speedometer.textureSpeedometer, NULL, &player.speedometer.destinoSpeedometer);
          SDL_RenderCopyEx(renderer, player.speedometer.textureArrow, NULL, &player.speedometer.destinoArrow, player.speedometer.angle, &player.speedometer.rotation_axis, SDL_FLIP_NONE);
@@ -138,16 +197,41 @@ void init(){
 
         handleEvents(running, &player.carro);
         handlePlayerDirections(&player, &pista);
-        handleBotDirections(&bot);
-        adjustBotPosition(player, &bot);
-        move(&bot, &pista);
 
-        //bot.carro.destino.y -= 1;
-        //bot.y -= 1;
-        //bot.angle = carro.angle;
+        for(Bot *bot : bots){
+            handleBotDirections(bot);
+            adjustBotPosition(player, bot);
+            move(bot, &pista);
+        }
 
 
-        if(isNewLap(&pista, &player.carro)) incrementCurrentLap(&player.carro, &lapNumberOrigem);
+        if(isNewLap(&player.carro)){
+
+            incrementCurrentLap(&player.carro, &lapNumberOrigem);
+        };
+
+        /*
+        if(isNewLap(&bot.carro)){
+               if(bot.carro.current_lap == maxLaps){
+                  bot.carro.direction.up = false;
+                  bot.carro.direction.down = true;
+
+               }else{
+                   bot.carro.current_lap++;
+                   bot.carro.block_lap_increment = true;
+               }
+        }*/
+
+        //checkPosition(&player.carro, &bot.carro);
+
+/*
+        cout <<"you: " << player.carro.race_position << " " <<player.carro.coordinates.x <<", "<< player.carro.coordinates.y << endl;
+        cout << bot.carro.race_position << " " << bot.carro.coordinates.x <<", "<< bot.carro.coordinates.y << endl;
+        cout << endl;
+*/
+
+
+
 
         SDL_Delay(1000/60);//60 FPS
     }
@@ -159,7 +243,10 @@ void init(){
 
     SDL_DestroyTexture(player.speedometer.textureArrow);
     SDL_DestroyTexture(player.speedometer.textureSpeedometer);
-    SDL_DestroyTexture(bot.carro.texture);
+    for(Bot *bot : bots){
+          SDL_DestroyTexture(bot->carro.texture);
+    }
+
     SDL_DestroyWindow(window);
 
     SDL_Quit();
