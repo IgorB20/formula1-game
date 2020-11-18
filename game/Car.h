@@ -20,6 +20,7 @@ struct Car {
     bool isOnGrass = false;
     string pilot_name;
     Mix_Chunk* Sound = nullptr;
+    Mix_Chunk* Sound2 = nullptr;
     SDL_Point coordinates;
     Direction direction;
     SDL_Texture* texture = nullptr;

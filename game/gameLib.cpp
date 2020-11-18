@@ -147,7 +147,7 @@ void init(){
     player.speedometer.textureSpeedometer = IMG_LoadTexture(renderer, "assets/images/speedometer.png");
     player.speedometer.destinoSpeedometer = {.x= 0, .y= 400, .w= 266, .h= 202,};
     player.carro.Sound = Mix_LoadWAV("assets/sounds/Car Engine.wav");
-
+    player.carro.Sound2 = Mix_LoadWAV("assets/sounds/Car Engine 2.wav");
 
     Bot bot1;
     bot1.carro.pilot_name = "Airton Senna";

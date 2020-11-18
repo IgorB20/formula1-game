@@ -69,7 +69,7 @@ void desacelerate(Car* carro){
             }else{
                 carro->speed -= 0.04;
             }
-            Mix_PlayChannel(0,carro->Sound,0);
+            Mix_PlayChannel(0,carro->Sound2,0);
         }
 }
 
